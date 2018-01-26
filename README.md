@@ -8,3 +8,4 @@
 	* Trial/error, easiest route seemed to be to create empty repo on Mac
 	* From there, perform a fetch on my Github repo and was able to sync
 	* Changes to/from master should be accessible by simply fetching again
+	* TRYING CHANGE 
