@@ -9,3 +9,4 @@
 	* From there, perform a fetch on my Github repo and was able to sync
 	* Changes to/from master should be accessible by simply fetching again
 	* TRYING CHANGE 
+	* So, then, when syncing back and forth, use git pull to sync down the master
