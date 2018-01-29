@@ -4,21 +4,60 @@ import "fmt"
 import "net"
 import "bufio"
 
-type client struct {
-	clientid net.Conn
+// Struct Outlining The Client
+/*
+type Client struct {
 	clientAddr net.Addr
+	in_msg chan string
+	out msg chan string
+	reader *bufio.Reader
+	writer *bufio.Writer
+}
+*/
+
+type Client struct {
+	clientAddr net.Addr
+	in_msg chan string
+	out_msg chan string
+	reader   *bufio.Reader
+	writer   *bufio.Writer
 }
 
+// Func to create and return a new client
+// Pointer to the client, return than a full memory copy of client
+// * Deferences the client from it's memory
+// Using hte pointer because we don't need to keep a copy of each new client
+func NewClient(c net.Conn) *Client {
+	clientAddr := c.LocalAddr()
+	writer := bufio.NewWriter(c)
+	reader := bufio.NewReader(c)
+
+	// Setting the return values
+	client := &Client{
+		clientAddr: clientAddr,
+		in_msg: make(chan string),
+		out_msg: make(chan string),
+		writer: writer,
+		reader: reader,
+	}
+
+	return client
+}
+/*
+-- My Old Intro Code
 func clientIntro(c net.Conn) {
 	w := bufio.NewWriter(c)
 
-	_, err := w.Write([]byte("Welcome!"))
+	fmt.Println(w)
+	wrt, err := w.Write([]byte("Welcome!"))
 	if err != nil {
 		fmt.Println("Msg Delivered")
 	} else {
+		fmt.Println(wrt) // seesm to be printing 8 bytes
 		fmt.Println("Delivery error:", err)
 	}
 }
+*/
 
 func main() {
 
@@ -28,18 +67,14 @@ func main() {
 	}
 
 	// Running slice of clients
-	clients := []*client{}
+	clients := []*Client{}
 
 	for {
 		conn, err := ln.Accept()
 		if err != nil {
 			fmt.Println("Error accepting connection")
 		} else {
-			clientConn := new(client)
-			clientConn.clientid = conn
-			clientConn.clientAddr = conn.LocalAddr()
-			go clientIntro(conn)
-
+			clientConn := NewClient(conn)
 			clients = append(clients, clientConn)
 
 			fmt.Println("New connection")
